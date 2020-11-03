@@ -1,4 +1,8 @@
+from fractions import Fraction
+
 """ analyze data functions for market py """
+
+data = {}
 
 def simple_moving_average(read, item):
     """ calculate the simple moving average total data"""
@@ -22,19 +26,24 @@ def simple_moving_average_days(read, item, days):
 
 def smoothing_days(smoothing, days):
     """ ema multiplier """
-    smooth = smoothing / (1 + days)
+    smooth = Fraction(smoothing, (1 + days))
     if smooth:
-        return smooth
+        return float(smooth)
     return 0
 
-def exponential_moving_average(read, item):
+
+def exponential_moving_average(read, item, days):
     """ exponential moving average """
     rows = list(read)
-    lastrow = rows[-1][item]
-    secondlastow = rows[-2][item]
-    smoothing = 2
-    ema_yesterday = (float(lastrow) * (1 - (smoothing_days(smoothing, 1))))
-    ema_today = (float(secondlastow) * smoothing_days(smoothing, 1))
-    ema = ema_today + ema_yesterday
-    print ema
-    return ema
+    for i, row in enumerate(rows):
+        close = float(row['Close'])
+        ema = None
+        smoothing = 2
+        if i <= days:
+            if i == 0:
+                ema = close
+            else:
+                ema = (close * smoothing_days(smoothing, i)) + data[i-1] * (1 - smoothing_days(smoothing, i))
+            data[i] = ema
+    print data
+    return data

@@ -12,7 +12,7 @@ def read_data(data, item):
     try:
         # simple_moving_average(read, item)
         # simple_moving_average_days(read, item, 20)
-        exponential_moving_average(read, item)
+        exponential_moving_average(read, item, 12)
     # exit from python
     except csv.Error as _e:
         sys.exit('file {}, line {}: {}'.format(data, read.line_num, _e))
